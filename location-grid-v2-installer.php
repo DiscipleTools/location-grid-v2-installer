@@ -3,7 +3,7 @@
  * Plugin Name: Location Grid V2 Installer
  * Plugin URI: https://github.com/DiscipleTools/location-grid-v2-installer
  * Description: Small utility to add the latest location grid database and overwrite the current one. (386k+)
- * Version:  0.3
+ * Version:  0.4
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://github.com/DiscipleTools/location-grid-v2-installer
  * Requires at least: 4.7.0
