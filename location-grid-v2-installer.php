@@ -70,7 +70,7 @@ add_action( 'after_setup_theme', function (){
  */
 class Location_Grid_Full_DB_Updater {
 
-    public $version = 0.3;
+    public $version = 0.4;
     public $token = 'upgrade_lgdb';
     public $title = 'Location Grid v2 Installer';
     public $permissions = 'manage_dt';
