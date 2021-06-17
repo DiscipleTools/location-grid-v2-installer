@@ -2,6 +2,12 @@
 /**
  * Command Line Utility for Building DT Location Grid Folder
  *
+ * @use
+ * $ php build.php
+ *
+ * This rebuilds the files in the files folder.
+ * Then use wp-admin to install to the DT site.
+ *
  * @requires a mysql database with connection information in the connect_params.json
  *          The full location_grid table installed in the database.
  *           ability to create/overwrite a new table called 'dt_location_grid'
@@ -320,6 +326,18 @@ ALTER TABLE {$table['dt']} DROP COLUMN wikidata_ref;
         exit();
     } else {
         print date('H:i:s') . ' | Dropped column wikidata_ref' . PHP_EOL;
+    }
+
+    // drop columns
+    print date('H:i:s') . ' | Start drop column population_date.' . PHP_EOL;
+    $result = mysqli_query( $con, "
+ALTER TABLE {$table['dt']} DROP COLUMN population_date;
+    " );
+    if ( ! $result ) {
+        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        exit();
+    } else {
+        print date('H:i:s') . ' | Dropped column population_date' . PHP_EOL;
     }
 
 // add columns
