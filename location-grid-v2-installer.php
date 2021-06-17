@@ -1,23 +1,24 @@
 <?php
 /**
  * Plugin Name: Location Grid V2 Installer
- * Plugin URI: https://github.com/DiscipleTools/location-grid-v2-installer
+ * Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Description: Small utility to add the latest location grid database and overwrite the current one. (386k+)
  * Version:  0.4
- * Author URI: https://github.com/DiscipleTools
- * GitHub Plugin URI: https://github.com/DiscipleTools/location-grid-v2-installer
+ * Author URI: https://github.com/Pray4Movement
+ * GitHub Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
  * Tested up to: 5.5
  *
  * @package Disciple_Tools
- * @link    https://github.com/DiscipleTools
+ * @link    https://github.com/Pray4Movement
  * @license GPL-2.0 or later
  *          https://www.gnu.org/licenses/gpl-2.0.html
  *
  * @version 0.1 Working installer
  *          0.2 Table replacement with refactoring.
  *          0.3 Populations for colorado and slovenia
+ *          0.4 Added US populations to admin2
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly

@@ -126,6 +126,7 @@ if ( $rebuild_db ) :
   `east_longitude` float DEFAULT NULL,
   `west_longitude` float DEFAULT NULL,
   `population` bigint(20) NOT NULL DEFAULT '0',
+  `population_date` date DEFAULT NULL,
   `modification_date` date DEFAULT NULL,
   `geonames_ref` bigint(20) DEFAULT NULL,
   `wikidata_ref` varchar(20) DEFAULT NULL,
@@ -420,8 +421,8 @@ for ($i = 0; $i <= $loop_count; $i++) {
         unlink($output['lg'] . 'dt_full_location_grid_'.$i.'.tsv');
     }
     $results = mysqli_query( $con, "
-        SELECT * FROM {$table['dt']} LIMIT 30000 OFFSET {$offset} INTO OUTFILE '{$output['lg']}dt_full_location_grid_{$i}.tsv' 
-        FIELDS TERMINATED BY '\t' 
+        SELECT * FROM {$table['dt']} LIMIT 30000 OFFSET {$offset} INTO OUTFILE '{$output['lg']}dt_full_location_grid_{$i}.tsv'
+        FIELDS TERMINATED BY '\t'
         LINES TERMINATED BY '\n';
     " );
     print 'offset '. $offset . PHP_EOL;
