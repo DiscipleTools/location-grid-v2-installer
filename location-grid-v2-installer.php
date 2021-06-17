@@ -3,7 +3,7 @@
  * Plugin Name: Location Grid V2 Installer
  * Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Description: Small utility to add the latest location grid database and overwrite the current one. (386k+)
- * Version:  0.4
+ * Version:  2.4
  * Author URI: https://github.com/Pray4Movement
  * GitHub Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Requires at least: 4.7.0
@@ -19,6 +19,7 @@
  *          0.2 Table replacement with refactoring.
  *          0.3 Populations for colorado and slovenia
  *          0.4 Added US populations to admin2
+ *          2.4 Matched version number to the v2 LG naming
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly
@@ -70,7 +71,7 @@ add_action( 'after_setup_theme', function (){
  */
 class Location_Grid_Full_DB_Updater {
 
-    public $version = 0.4;
+    public $version = 2.4;
     public $token = 'upgrade_lgdb';
     public $title = 'Location Grid v2 Installer';
     public $permissions = 'manage_dt';
