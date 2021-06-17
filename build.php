@@ -182,6 +182,18 @@ INSERT INTO {$table['dt']} SELECT * FROM `location_grid`;
         print date('H:i:s') . ' | End transfer data.' . PHP_EOL;
     }
 
+// round populations
+    print date('H:i:s') . ' | Start round populations.' . PHP_EOL;
+    $result = mysqli_query( $con, "
+        UPDATE {$table['dt']} SET population = CEILING (population / 100) * 100;
+    " );
+    if ( ! $result ) {
+        print date('H:i:s') . ' | Failed to round populations.' . PHP_EOL;
+        exit();
+    } else {
+        print date('H:i:s') . ' | End round populations.' . PHP_EOL;
+    }
+
 
 // drop indexes
     print date('H:i:s') . ' | Start drop index admin1.' . PHP_EOL;
