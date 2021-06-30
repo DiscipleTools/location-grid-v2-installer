@@ -30,51 +30,28 @@ add_action( 'after_setup_theme', function (){
         return false;
     }
 
-    $required_dt_theme_version = '1.4.0';
     $wp_theme = wp_get_theme();
-    $version = $wp_theme->version;
-    /*
-     * Check if the Disciple.Tools theme is loaded and is the latest required version
-     */
-    $is_theme_dt = strpos( $wp_theme->get_template(), "disciple-tools-theme" ) !== false || $wp_theme->name === "Disciple Tools";
-    if ( $is_theme_dt && version_compare( $version, $required_dt_theme_version, "<" ) ) {
-        add_action('admin_notices', function () {
-            ?>
-            <div class="notice notice-error notice-location_grid_v2_installer is-dismissible" data-notice="location_grid_v2_installer">Disciple
-                Tools Theme not active or not latest version for this plugin.
-            </div><?php
-        });
+    if ( ! in_array( $wp_theme->get_template(), ["disciple-tools-theme", "zume-training" ] ) ) {
         return false;
     }
-    if ( !$is_theme_dt ){
-        return false;
-    }
-    /**
-     * Load useful function from the theme
-     */
-    if ( !defined( 'DT_FUNCTIONS_READY' ) ){
-        require_once get_template_directory() . '/dt-core/global-functions.php';
-    }
-    /*
-     * Don't load the plugin on every rest request. Only those with the 'sample' namespace
-     */
+
     $is_rest = dt_is_rest();
     if ( !$is_rest ){
-        return Location_Grid_Full_DB_Updater::instance();
+        return Location_Grid_v2_DB_Updater::instance();
     }
     return false;
 } );
 
 
 /**
- * Class Location_Grid_Full_DB_Updater
+ * Class Location_Grid_v2_DB_Updater
  */
-class Location_Grid_Full_DB_Updater {
+class Location_Grid_v2_DB_Updater {
 
     public $version = 2.4;
     public $token = 'upgrade_lgdb';
     public $title = 'Location Grid v2 Installer';
-    public $permissions = 'manage_dt';
+    public $permissions = 'manage_options';
 
 
     /**  Singleton */
@@ -104,13 +81,8 @@ class Location_Grid_Full_DB_Updater {
      * @since 0.1
      */
     public function register_menu() {
-        add_submenu_page( 'dt_extensions', $this->title, $this->title, $this->permissions, $this->token, [ $this, 'content' ] );
+        add_menu_page( $this->title, $this->title, $this->permissions, $this->token, [ $this, 'content' ] );
     }
-
-    /**
-     * Menu stub. Replaced when Disciple Tools Theme fully loads.
-     */
-    public function extensions_menu() {}
 
     /**
      * Builds page contents
@@ -560,8 +532,8 @@ class Location_Grid_Full_DB_Updater {
 }
 
 // Register activation hook.
-register_activation_hook( __FILE__, [ 'Location_Grid_Full_DB_Updater', 'activation' ] );
-register_deactivation_hook( __FILE__, [ 'Location_Grid_Full_DB_Updater', 'deactivation' ] );
+register_activation_hook( __FILE__, [ 'Location_Grid_v2_DB_Updater', 'activation' ] );
+register_deactivation_hook( __FILE__, [ 'Location_Grid_v2_DB_Updater', 'deactivation' ] );
 
 add_action( 'plugins_loaded', function (){
     if ( is_admin() ){
