@@ -31,22 +31,22 @@ add_action( 'after_setup_theme', function (){
     }
 
     $wp_theme = wp_get_theme();
-    if ( ! in_array( $wp_theme->get_template(), ["disciple-tools-theme", "zume-training" ] ) ) {
+    if ( ! in_array( $wp_theme->get_template(), [ "disciple-tools-theme", "zume-training" ] ) ) {
         return false;
     }
 
     $is_rest = dt_is_rest();
     if ( !$is_rest ){
-        return Location_Grid_v2_DB_Updater::instance();
+        return Location_Grid_V2_DB_Updater::instance();
     }
     return false;
 } );
 
 
 /**
- * Class Location_Grid_v2_DB_Updater
+ * Class Location_Grid_V2_DB_Updater
  */
-class Location_Grid_v2_DB_Updater {
+class Location_Grid_V2_DB_Updater {
 
     public $version = 2.4;
     public $token = 'upgrade_lgdb';
@@ -157,7 +157,7 @@ class Location_Grid_v2_DB_Updater {
                 <script type="text/javascript">
                     <!--
                     function nextpage() {
-                        location.href = "<?php echo admin_url() ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=1&nonce=<?php echo wp_create_nonce( 'loop'.get_current_user_id() ) ?>";
+                        location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=1&nonce=<?php echo esc_attr( wp_create_nonce( 'loop'.get_current_user_id() ) ) ?>";
                     }
                     setTimeout( "nextpage()", 1500 );
                     //-->
@@ -186,12 +186,13 @@ class Location_Grid_v2_DB_Updater {
         }
         if ( $result ) {
             ?>
-            <?php foreach( $this->steps as $index => $label ) :
+            <?php foreach ( $this->steps as $index => $label ) :
                 if ( $index <= $step ) : ?>
                     <tr>
                         <td><?php echo esc_html( $label ) ?></td>
                     </tr>
-                <?php endif; endforeach; ?>
+                <?php endif;
+            endforeach; ?>
             <?php if ( $step < count( $this->steps ) - 1 ) : ?>
                 <tr>
                     <td><img src="<?php echo esc_url( get_theme_file_uri() ) ?>/spinner.svg" width="30px" alt="spinner" /></td>
@@ -199,7 +200,7 @@ class Location_Grid_v2_DB_Updater {
                 <script type="text/javascript">
                     <!--
                     function nextpage() {
-                        location.href = "<?php echo admin_url() ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=<?php echo esc_attr( $step + 1 ) ?>&nonce=<?php echo wp_create_nonce( 'loop'.get_current_user_id() ) ?>";
+                        location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=<?php echo esc_attr( $step + 1 ) ?>&nonce=<?php echo esc_attr( wp_create_nonce( 'loop'.get_current_user_id() ) ) ?>";
                     }
                     setTimeout( "nextpage()", 1500 );
                     //-->
@@ -210,7 +211,7 @@ class Location_Grid_v2_DB_Updater {
             ?>
             Ooops. Error found. Step <?php echo esc_html( $step ); ?><br>
             <?php
-            print_r($result);
+            print_r( $result );
         }
     }
 
@@ -237,7 +238,7 @@ class Location_Grid_v2_DB_Updater {
 
     public function process_step_1() {
         global $wpdb;
-        dt_write_log(__METHOD__);
+        dt_write_log( __METHOD__ );
         $wpdb->query("
         DROP TABLE IF EXISTS `{$wpdb->prefix}dt_location_grid_upgrade`
         ");
@@ -293,71 +294,71 @@ class Location_Grid_v2_DB_Updater {
         ");
 
         if ( $result === false ) {
-            return new WP_Error(__METHOD__, 'Did not create table', ['error', $result ] );
+            return new WP_Error( __METHOD__, 'Did not create table', [ 'error', $result ] );
         }
 
         return true;
     }
     public function process_step_2() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file(trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_0.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_0.tsv' );
     }
     public function process_step_3() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_1.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_1.tsv' );
     }
     public function process_step_4() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_2.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_2.tsv' );
     }
     public function process_step_5() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_3.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_3.tsv' );
     }
     public function process_step_6() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_4.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_4.tsv' );
     }
     public function process_step_7() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_5.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_5.tsv' );
     }
     public function process_step_8() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_6.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_6.tsv' );
     }
     public function process_step_9() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_7.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_7.tsv' );
     }
     public function process_step_10() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_8.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_8.tsv' );
     }
     public function process_step_11() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_9.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_9.tsv' );
     }
     public function process_step_12() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_10.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_10.tsv' );
     }
     public function process_step_13() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_11.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_11.tsv' );
     }
     public function process_step_14() {
-        dt_write_log(__METHOD__);
-        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path(__FILE__) ) . 'files/dt_full_location_grid_12.tsv' );
+        dt_write_log( __METHOD__ );
+        return $this->install_upgrade_db_file( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'files/dt_full_location_grid_12.tsv' );
     }
     public function process_step_15() {
-        dt_write_log(__METHOD__);
+        dt_write_log( __METHOD__ );
         /* @todo Migrate custom table records to new database table*/
 
         return true;
     }
     public function process_step_16() {
-        dt_write_log(__METHOD__);
+        dt_write_log( __METHOD__ );
         /**
          * Swap upgrade table as new table
          */
@@ -373,7 +374,7 @@ class Location_Grid_v2_DB_Updater {
         return true;
     }
     public function process_step_17() {
-        dt_write_log(__METHOD__);
+        dt_write_log( __METHOD__ );
         /**
          * @todo Update post records with new grid information
          * This should only apply to lowest level, mapbox geolocations that were place or city, and can now be geocoded to a lower level.
@@ -404,19 +405,19 @@ class Location_Grid_v2_DB_Updater {
                 $query = str_replace( ", ;", ";", $query ); //remove last comma
                 $result = $wpdb->query( $query );  //phpcs:ignore
                 if ( $result === false ) {
-                    return new WP_Error(__METHOD__ . ': Inside 500 Count', 'Failed query', ['error', $result ] );
+                    return new WP_Error( __METHOD__ . ': Inside 500 Count', 'Failed query', [ 'error', $result ] );
                 }
                 $query = "INSERT IGNORE INTO `{$wpdb->prefix}dt_location_grid_upgrade` VALUES ";
                 $count = 0;
             }
         }
-        if ( strpos($query, '(' ) !== false ) {
+        if ( strpos( $query, '(' ) !== false ) {
             //add the last queries
             $query .= ';';
             $query = str_replace( ", ;", ";", $query ); //remove last comma
             $result = $wpdb->query( $query );  //phpcs:ignore
             if ( $result === false ) {
-                return new WP_Error(__METHOD__, 'Failed query 2', ['error', $result ] );
+                return new WP_Error( __METHOD__, 'Failed query 2', [ 'error', $result ] );
             }
         }
 
@@ -424,16 +425,16 @@ class Location_Grid_v2_DB_Updater {
     }
 
     public function dt_array_to_sql( $values) {
-            if (empty( $values )) {
-                return 'NULL';
+        if (empty( $values )) {
+            return 'NULL';
+        }
+        foreach ($values as &$val) {
+            if ('\N' === $val) {
+                $val = 'NULL';
+            } else {
+                $val = "'" . esc_sql( trim( $val ) ) . "'";
             }
-            foreach ($values as &$val) {
-                if ('\N' === $val) {
-                    $val = 'NULL';
-                } else {
-                    $val = "'" . esc_sql( trim( $val ) ) . "'";
-                }
-            }
+        }
         return implode( ',', $values );
     }
 
@@ -532,8 +533,8 @@ class Location_Grid_v2_DB_Updater {
 }
 
 // Register activation hook.
-register_activation_hook( __FILE__, [ 'Location_Grid_v2_DB_Updater', 'activation' ] );
-register_deactivation_hook( __FILE__, [ 'Location_Grid_v2_DB_Updater', 'deactivation' ] );
+register_activation_hook( __FILE__, [ 'Location_Grid_V2_DB_Updater', 'activation' ] );
+register_deactivation_hook( __FILE__, [ 'Location_Grid_V2_DB_Updater', 'deactivation' ] );
 
 add_action( 'plugins_loaded', function (){
     if ( is_admin() ){

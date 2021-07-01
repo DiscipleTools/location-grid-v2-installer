@@ -15,14 +15,14 @@
  *
  *           php build_location_grid.php
  */
-
+// @phpcs:disable
 // Extend PHP limits for large processing
-ini_set('memory_limit', '50000M');
+ini_set( 'memory_limit', '50000M' );
 
-$start_timestamp = date('H:i:s');
+$start_timestamp = date( 'H:i:s' );
 
 print '**************************************************************'. PHP_EOL;
-print date('H:i:s') . ' | START SCRIPT'. PHP_EOL;
+print date( 'H:i:s' ) . ' | START SCRIPT'. PHP_EOL;
 print '**************************************************************'. PHP_EOL;
 
 
@@ -41,7 +41,7 @@ $output = [
 
 foreach ( $output as $dirname ) {
     if ( ! is_dir( $dirname ) ) {
-        mkdir($dirname, 0755, true);
+        mkdir( $dirname, 0755, true );
     }
 }
 
@@ -55,7 +55,7 @@ foreach ( $output as $dirname ) {
 
 
 // define database connection
-if ( ! file_exists( 'connect_params.json') ) {
+if ( ! file_exists( 'connect_params.json' ) ) {
     $content = '{"host": "","username": "","password": "","database": ""}';
     file_put_contents( 'connect_params.json', $content );
 }
@@ -65,8 +65,8 @@ if ( empty( $params['host'] ) ) {
 Please, open the connect_params.json file and add host, username, password, and database information.' . PHP_EOL;
     exit();
 }
-$con = mysqli_connect( $params['host'], $params['username'], $params['password'],$params['database']);
-if (!$con) {
+$con = mysqli_connect( $params['host'], $params['username'], $params['password'], $params['database'] );
+if ( !$con) {
     echo 'mysqli Connection FAILED. Check parameters inside connect_params.json file.' . PHP_EOL;
     exit();
 }
@@ -88,11 +88,11 @@ if ( $rebuild_db ) :
         SELECT 1 FROM {$table['dt']} LIMIT 1;
     " );
     if ( $exists ) {
-        print date('H:i:s') . ' | Drop previous dt_location_grid table.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Drop previous dt_location_grid table.' . PHP_EOL;
         mysqli_query( $con, "
         DROP TABLE {$table['dt']};
     " );
-        print date('H:i:s') . ' | End previous dt_location_grid table.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End previous dt_location_grid table.' . PHP_EOL;
     }
     /*************************************************************************************************************/
 // END SETUP
@@ -104,7 +104,7 @@ if ( $rebuild_db ) :
     /*************************************************************************************************************/
 
 // create table
-    print date('H:i:s') . ' | Start create table.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start create table.' . PHP_EOL;
     $result = mysqli_query( $con, "
     CREATE TABLE {$table['dt']} (
   `grid_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -164,276 +164,276 @@ if ( $rebuild_db ) :
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | Failed to create table' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Failed to create table' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End create table.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End create table.' . PHP_EOL;
     }
 
 // transfer data
-    print date('H:i:s') . ' | Start transfer data.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start transfer data.' . PHP_EOL;
     $result = mysqli_query( $con, "
 INSERT INTO {$table['dt']} SELECT * FROM `location_grid`;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | Failed to transfer data.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Failed to transfer data.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End transfer data.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End transfer data.' . PHP_EOL;
     }
 
 // round populations
-    print date('H:i:s') . ' | Start round populations.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start round populations.' . PHP_EOL;
     $result = mysqli_query( $con, "
         UPDATE {$table['dt']} SET population = CEILING (population / 100) * 100;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | Failed to round populations.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Failed to round populations.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End round populations.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End round populations.' . PHP_EOL;
     }
 
 
 // drop indexes
-    print date('H:i:s') . ' | Start drop index admin1.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop index admin1.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP INDEX admin1_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped indexes.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped indexes.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End drop index admin1.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End drop index admin1.' . PHP_EOL;
     }
 
 // drop indexes
-    print date('H:i:s') . ' | Start drop index admin2.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop index admin2.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP INDEX admin2_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped indexes.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped indexes.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End drop index admin2.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End drop index admin2.' . PHP_EOL;
     }
 
 // drop indexes
-    print date('H:i:s') . ' | Start drop index admin3.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop index admin3.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP INDEX admin3_code;
 
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped indexes.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped indexes.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End drop index admin3.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End drop index admin3.' . PHP_EOL;
     }
 
 // drop indexes
-    print date('H:i:s') . ' | Start drop index admin4.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop index admin4.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP INDEX admin4_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped indexes.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped indexes.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End drop index admin4.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End drop index admin4.' . PHP_EOL;
     }
 
 // drop indexes
-    print date('H:i:s') . ' | Start drop index admin5.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop index admin5.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP INDEX admin5_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped indexes.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped indexes.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End drop index admin5.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End drop index admin5.' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column admin1.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column admin1.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN admin1_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column admin1' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column admin1' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column admin2.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column admin2.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN admin2_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column admin2' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column admin2' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column admin3.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column admin3.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN admin3_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column admin3' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column admin3' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column admin4.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column admin4.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN admin4_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column admin4' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column admin4' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column admin5.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column admin5.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN admin5_code;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column admin5' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column admin5' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column geonames_ref.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column geonames_ref.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN geonames_ref;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column geonames_ref' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column geonames_ref' . PHP_EOL;
     }
 
 // drop columns
-    print date('H:i:s') . ' | Start drop column wikidata_ref.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column wikidata_ref.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN wikidata_ref;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column wikidata_ref' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column wikidata_ref' . PHP_EOL;
     }
 
     // drop columns
-    print date('H:i:s') . ' | Start drop column population_date.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start drop column population_date.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} DROP COLUMN population_date;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Dropped columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Dropped columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Dropped column population_date' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Dropped column population_date' . PHP_EOL;
     }
 
 // add columns
-    print date('H:i:s') . ' | Start add column alt_name.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start add column alt_name.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} ADD `alt_name` VARCHAR(200) NULL DEFAULT NULL  AFTER `modification_date`;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Added columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Added columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End add column alt_name.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End add column alt_name.' . PHP_EOL;
     }
 
 // add columns
-    print date('H:i:s') . ' | Start add column alt_population.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start add column alt_population.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} ADD `alt_population` BIGINT(20) NULL DEFAULT 0  AFTER `alt_name`;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Added columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Added columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End add column alt_population.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End add column alt_population.' . PHP_EOL;
     }
 // add columns
-    print date('H:i:s') . ' | Start is_custom_location.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start is_custom_location.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} ADD `is_custom_location` TINYINT(1)  NOT NULL  DEFAULT '0'  AFTER `alt_population`;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Added columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Added columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End is_custom_location.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End is_custom_location.' . PHP_EOL;
     }
 
 // add columns
-    print date('H:i:s') . ' | Start add column alt_name_changed.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start add column alt_name_changed.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} ADD `alt_name_changed` TINYINT(1)  NOT NULL  DEFAULT '0'  AFTER `is_custom_location`;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Added columns.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Added columns.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End alt_name_changed.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End alt_name_changed.' . PHP_EOL;
     }
 
 
 // add index
-    print date('H:i:s') . ' | Start alt_name_changed.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start alt_name_changed.' . PHP_EOL;
     $result = mysqli_query( $con, "
 ALTER TABLE {$table['dt']} ADD FULLTEXT INDEX (`alt_name`);
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Add index.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Add index.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | Add index.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | Add index.' . PHP_EOL;
     }
 
 // copy names
-    print date('H:i:s') . ' | Start copy names.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start copy names.' . PHP_EOL;
     $result = mysqli_query( $con, "
 UPDATE {$table['dt']} SET alt_name=name;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Copy names.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Copy names.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End copy names.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End copy names.' . PHP_EOL;
     }
 
 // copy names
-    print date('H:i:s') . ' | Start populations.' . PHP_EOL;
+    print date( 'H:i:s' ) . ' | Start populations.' . PHP_EOL;
     $result = mysqli_query( $con, "
 UPDATE {$table['dt']} SET alt_population=population;
     " );
     if ( ! $result ) {
-        print date('H:i:s') . ' | FAIL: Copy populations.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | FAIL: Copy populations.' . PHP_EOL;
         exit();
     } else {
-        print date('H:i:s') . ' | End populations.' . PHP_EOL;
+        print date( 'H:i:s' ) . ' | End populations.' . PHP_EOL;
     }
 
 
@@ -448,7 +448,7 @@ $loop_count = 13;
 $offset = 0;
 for ($i = 0; $i <= $loop_count; $i++) {
     if ( file_exists( $output['lg'] . 'dt_full_location_grid_'.$i.'.tsv' ) ) {
-        unlink($output['lg'] . 'dt_full_location_grid_'.$i.'.tsv');
+        unlink( $output['lg'] . 'dt_full_location_grid_'.$i.'.tsv' );
     }
     $results = mysqli_query( $con, "
         SELECT * FROM {$table['dt']} LIMIT 30000 OFFSET {$offset} INTO OUTFILE '{$output['lg']}dt_full_location_grid_{$i}.tsv'
@@ -458,8 +458,9 @@ for ($i = 0; $i <= $loop_count; $i++) {
     print 'offset '. $offset . PHP_EOL;
     if ( filesize( $output['lg'] . 'dt_full_location_grid_'.$i.'.tsv' ) === 0 ) {
         unlink( $output['lg'] . 'dt_full_location_grid_'.$i.'.tsv' );
-        print date('H:i:s') . ' | ' . 'dt_full_location_grid_'.$i.'.tsv no value. Removed.'. PHP_EOL;
+        print date( 'H:i:s' ) . ' | ' . 'dt_full_location_grid_'.$i.'.tsv no value. Removed.'. PHP_EOL;
     }
 
     $offset = $offset + 30000;
 }
+// @phpcs:enable
