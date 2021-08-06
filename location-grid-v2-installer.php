@@ -3,7 +3,7 @@
  * Plugin Name: Location Grid V2 Installer
  * Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Description: Small utility to add the latest location grid database and overwrite the current one. (386k+)
- * Version:  2.4
+ * Version:  2.5
  * Author URI: https://github.com/Pray4Movement
  * GitHub Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Requires at least: 4.7.0
@@ -48,7 +48,7 @@ add_action( 'after_setup_theme', function (){
  */
 class Location_Grid_V2_DB_Updater {
 
-    public $version = 2.4;
+    public $version = 2.5;
     public $token = 'upgrade_lgdb';
     public $title = 'Location Grid v2 Installer';
     public $permissions = 'manage_options';
@@ -467,7 +467,14 @@ class Location_Grid_V2_DB_Updater {
      * @return void
      */
     public static function activation() {
-
+        // dt_location_grid_mirror
+        // a:3:{s:3:"key";s:5:"other";s:5:"label";s:5:"Other";s:3:"url";s:55:"https://storage.googleapis.com/location-grid-mirror-v2/";}
+        $setting = [
+            'key' => 'other',
+            'label' => 'Other',
+            'url' => 'https://storage.googleapis.com/location-grid-mirror-v2/'
+        ];
+        update_option('dt_location_grid_mirror', $setting, true );
     }
 
     /**
