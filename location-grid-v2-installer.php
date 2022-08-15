@@ -3,7 +3,7 @@
  * Plugin Name: Location Grid V2 Installer
  * Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Description: Small utility to add the latest location grid database and overwrite the current one. (386k+)
- * Version:  2.5
+ * Version:  2.6
  * Author URI: https://github.com/Pray4Movement
  * GitHub Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
  * Requires at least: 4.7.0
@@ -48,7 +48,7 @@ add_action( 'after_setup_theme', function (){
  */
 class Location_Grid_V2_DB_Updater {
 
-    public $version = 2.5;
+    public $version = 2.6;
     public $token = 'upgrade_lgdb';
     public $title = 'Location Grid v2 Installer';
     public $permissions = 'manage_options';
@@ -155,12 +155,10 @@ class Location_Grid_V2_DB_Updater {
                     <td><img src="<?php echo esc_url( get_theme_file_uri() ) ?>/spinner.svg" width="30px" alt="spinner" /></td>
                 </tr>
                 <script type="text/javascript">
-                    <!--
                     function nextpage() {
                         location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=1&nonce=<?php echo esc_attr( wp_create_nonce( 'loop'.get_current_user_id() ) ) ?>";
                     }
                     setTimeout( "nextpage()", 1500 );
-                    //-->
                 </script>
                 <?php
             }
@@ -540,24 +538,24 @@ class Location_Grid_V2_DB_Updater {
 }
 
 // Register activation hook.
-register_activation_hook( __FILE__, [ 'Location_Grid_V2_DB_Updater', 'activation' ] );
-register_deactivation_hook( __FILE__, [ 'Location_Grid_V2_DB_Updater', 'deactivation' ] );
+//register_activation_hook( __FILE__, [ 'Location_Grid_V2_DB_Updater', 'activation' ] );
+//register_deactivation_hook( __FILE__, [ 'Location_Grid_V2_DB_Updater', 'deactivation' ] );
 
-add_action( 'plugins_loaded', function (){
-    if ( is_admin() ){
-        // Check for plugin updates
-        if ( ! class_exists( 'Puc_v4_Factory' ) ) {
-            if ( file_exists( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' )){
-                require( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' );
-            }
-        }
-        if ( class_exists( 'Puc_v4_Factory' ) ){
-            Puc_v4_Factory::buildUpdateChecker(
-                'https://raw.githubusercontent.com/Pray4Movement/location-grid-v2-installer/master/version-control.json',
-                __FILE__,
-                'location-grid-v2-installer'
-            );
-
-        }
-    }
-} );
+//add_action( 'plugins_loaded', function (){
+//    if ( is_admin() ){
+//        // Check for plugin updates
+//        if ( ! class_exists( 'Puc_v4_Factory' ) ) {
+//            if ( file_exists( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' )){
+//                require( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' );
+//            }
+//        }
+//        if ( class_exists( 'Puc_v4_Factory' ) ){
+//            Puc_v4_Factory::buildUpdateChecker(
+//                'https://raw.githubusercontent.com/Pray4Movement/location-grid-v2-installer/master/version-control.json',
+//                __FILE__,
+//                'location-grid-v2-installer'
+//            );
+//
+//        }
+//    }
+//} );
