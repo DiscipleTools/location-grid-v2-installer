@@ -15,6 +15,9 @@
  *
  *           php build_location_grid.php
  */
+if ( PHP_SAPI !== 'cli' ) {
+    exit;
+}
 // @phpcs:disable
 // Extend PHP limits for large processing
 ini_set( 'memory_limit', '50000M' );
