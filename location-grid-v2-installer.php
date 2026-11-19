@@ -253,21 +253,21 @@ class Location_Grid_V2_DB_Updater {
     public $steps = [
         '', // 0
         'Create staging table', // 1
-        'Upload batch 1 of 12 records',
-        'Upload batch 2 of 12 records',
-        'Upload batch 3 of 12 records',
-        'Upload batch 4 of 12 records',
-        'Upload batch 5 of 12 records',
-        'Upload batch 6 of 12 records',
-        'Upload batch 7 of 12 records',
-        'Upload batch 8 of 12 records',
-        'Upload batch 9 of 12 records',
-        'Upload batch 10 of 12 records',
-        'Upload batch 11 of 12 records',
-        'Upload batch 12 of 12 records',
+        'Upload batch 1 of 13 records',
+        'Upload batch 2 of 13 records',
+        'Upload batch 3 of 13 records',
+        'Upload batch 4 of 13 records',
+        'Upload batch 5 of 13 records',
+        'Upload batch 6 of 13 records',
+        'Upload batch 7 of 13 records',
+        'Upload batch 8 of 13 records',
+        'Upload batch 9 of 13 records',
+        'Upload batch 10 of 13 records',
+        'Upload batch 11 of 13 records',
+        'Upload batch 12 of 13 records',
+        'Upload batch 13 of 13 records',
         'Migrate custom records',
         'Swap live with new database',
-        'Update post records',
         'Finish'
     ];
 
