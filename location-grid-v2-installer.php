@@ -81,6 +81,10 @@ class Location_Grid_V2_DB_Updater {
      * @since 0.1
      */
     public function register_menu() {
+        // A shared network table is managed for all sites, not from one site's admin.
+        if ( apply_filters( 'dt_using_multisite_location_grid_table', false ) ) {
+            return;
+        }
         add_menu_page( $this->title, $this->title, $this->permissions, $this->token, [ $this, 'content' ] );
     }
 
@@ -370,11 +374,11 @@ class Location_Grid_V2_DB_Updater {
         global $wpdb;
         // drop current dt_location_grid table
         $wpdb->query("
-        DROP TABLE IF EXISTS `{$wpdb->prefix}dt_location_grid`
+        DROP TABLE IF EXISTS `$wpdb->dt_location_grid`
         ");
         // rename upgrade table to dt_location_grid
         $wpdb->query("
-        RENAME TABLE `{$wpdb->prefix}dt_location_grid_upgrade` TO `{$wpdb->prefix}dt_location_grid`;
+        RENAME TABLE `{$wpdb->prefix}dt_location_grid_upgrade` TO `$wpdb->dt_location_grid`;
         ");
         return true;
     }
