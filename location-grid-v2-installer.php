@@ -52,6 +52,7 @@ class Location_Grid_V2_DB_Updater {
     public $token = 'upgrade_lgdb';
     public $title = 'Location Grid v2 Installer';
     public $permissions = 'manage_options';
+    public $run_key = 'upgrade_lgdb_run';
 
 
     /**  Singleton */
@@ -159,23 +160,42 @@ class Location_Grid_V2_DB_Updater {
             }
             /* Start loop & add spinner */
             if ( $start_requested ) {
-                ?>
-                <tr>
-                    <td><img src="<?php echo esc_url( get_theme_file_uri() ) ?>/spinner.svg" width="30px" alt="spinner" /></td>
-                </tr>
-                <script type="text/javascript">
-                    function nextpage() {
-                        location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=1&nonce=<?php echo esc_attr( wp_create_nonce( 'loop'.get_current_user_id() ) ) ?>";
-                    }
-                    setTimeout( "nextpage()", 1500 );
-                </script>
-                <?php
+                $run = get_transient( $this->run_key );
+                if ( $run && (int) $run['user_id'] !== get_current_user_id() ) {
+                    ?>
+                    <tr>
+                        <td>Another administrator is already running this upgrade. Try again later.</td>
+                    </tr>
+                    <?php
+                } else {
+                    set_transient( $this->run_key, [ 'user_id' => get_current_user_id(), 'next_step' => 1 ], HOUR_IN_SECONDS );
+                    ?>
+                    <tr>
+                        <td><img src="<?php echo esc_url( get_theme_file_uri() ) ?>/spinner.svg" width="30px" alt="spinner" /></td>
+                    </tr>
+                    <script type="text/javascript">
+                        function nextpage() {
+                            location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=1&nonce=<?php echo esc_attr( wp_create_nonce( 'upgrade_lgdb_step' ) ) ?>";
+                        }
+                        setTimeout( "nextpage()", 1500 );
+                    </script>
+                    <?php
+                }
             }
 
             /* Loop */
-            if ( isset( $_GET['loop'], $_GET['step'], $_GET['nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nonce'] ) ), 'loop'.get_current_user_id() ) ) {
+            if ( isset( $_GET['loop'], $_GET['step'], $_GET['nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nonce'] ) ), 'upgrade_lgdb_step' ) ) {
                 $step = sanitize_text_field( wp_unslash( $_GET['step'] ) );
-                $this->run_loop( $step );
+                $run = get_transient( $this->run_key );
+                if ( ! $run || (int) $run['user_id'] !== get_current_user_id() || (string) $run['next_step'] !== $step ) {
+                    ?>
+                    <tr>
+                        <td>This step is out of order or the upgrade run has expired. Start the upgrade again.</td>
+                    </tr>
+                    <?php
+                } else {
+                    $this->run_loop( $step );
+                }
             }
 
             ?>
@@ -192,6 +212,11 @@ class Location_Grid_V2_DB_Updater {
             $result = $this->$func();
         }
         if ( $result && ! is_wp_error( $result ) ) {
+            if ( $step < count( $this->steps ) - 1 ) {
+                set_transient( $this->run_key, [ 'user_id' => get_current_user_id(), 'next_step' => $step + 1 ], HOUR_IN_SECONDS );
+            } else {
+                delete_transient( $this->run_key );
+            }
             ?>
             <?php foreach ( $this->steps as $index => $label ) :
                 if ( $index <= $step ) : ?>
@@ -207,7 +232,7 @@ class Location_Grid_V2_DB_Updater {
                 <script type="text/javascript">
                     <!--
                     function nextpage() {
-                        location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=<?php echo esc_attr( $step + 1 ) ?>&nonce=<?php echo esc_attr( wp_create_nonce( 'loop'.get_current_user_id() ) ) ?>";
+                        location.href = "<?php echo esc_url( admin_url() ) ?>admin.php?page=<?php echo esc_attr( $this->token )  ?>&loop=true&step=<?php echo esc_attr( $step + 1 ) ?>&nonce=<?php echo esc_attr( wp_create_nonce( 'upgrade_lgdb_step' ) ) ?>";
                     }
                     setTimeout( "nextpage()", 1500 );
                     //-->
@@ -218,6 +243,7 @@ class Location_Grid_V2_DB_Updater {
             ?>
             Ooops. Error found. Step <?php echo esc_html( $step ); ?><br>
             <?php
+            delete_transient( $this->run_key );
             if ( is_wp_error( $result ) ) {
                 echo esc_html( $result->get_error_message() );
             }
@@ -372,15 +398,34 @@ class Location_Grid_V2_DB_Updater {
          * Swap upgrade table as new table
          */
         global $wpdb;
-        // drop current dt_location_grid table
+        if ( ! $this->table_exists( $wpdb->prefix . 'dt_location_grid_upgrade' )
+            || ! (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$wpdb->prefix}dt_location_grid_upgrade`" ) ) {
+            return new WP_Error( __METHOD__, 'The new table is missing or empty. The live table was not changed.' );
+        }
+        // drop the backup left by an earlier run
         $wpdb->query("
-        DROP TABLE IF EXISTS `$wpdb->dt_location_grid`
+        DROP TABLE IF EXISTS `{$wpdb->dt_location_grid}_backup`
         ");
-        // rename upgrade table to dt_location_grid
-        $wpdb->query("
-        RENAME TABLE `{$wpdb->prefix}dt_location_grid_upgrade` TO `$wpdb->dt_location_grid`;
-        ");
+        // in one atomic rename, keep the current dt_location_grid table as the backup and swap in the upgrade table
+        if ( $this->table_exists( $wpdb->dt_location_grid ) ) {
+            $result = $wpdb->query("
+            RENAME TABLE `$wpdb->dt_location_grid` TO `{$wpdb->dt_location_grid}_backup`,
+                `{$wpdb->prefix}dt_location_grid_upgrade` TO `$wpdb->dt_location_grid`;
+            ");
+        } else {
+            $result = $wpdb->query("
+            RENAME TABLE `{$wpdb->prefix}dt_location_grid_upgrade` TO `$wpdb->dt_location_grid`;
+            ");
+        }
+        if ( $result === false ) {
+            return new WP_Error( __METHOD__, 'Could not swap in the new table: ' . $wpdb->last_error );
+        }
         return true;
+    }
+
+    private function table_exists( $table ) {
+        global $wpdb;
+        return $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) ) ) === $table;
     }
     public function process_step_17() {
         dt_write_log( __METHOD__ );
