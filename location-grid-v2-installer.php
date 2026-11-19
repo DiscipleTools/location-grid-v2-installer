@@ -187,7 +187,7 @@ class Location_Grid_V2_DB_Updater {
         if ( method_exists( $this, $func ) ){
             $result = $this->$func();
         }
-        if ( $result ) {
+        if ( $result && ! is_wp_error( $result ) ) {
             ?>
             <?php foreach ( $this->steps as $index => $label ) :
                 if ( $index <= $step ) : ?>
@@ -214,7 +214,9 @@ class Location_Grid_V2_DB_Updater {
             ?>
             Ooops. Error found. Step <?php echo esc_html( $step ); ?><br>
             <?php
-            print_r( $result );
+            if ( is_wp_error( $result ) ) {
+                echo esc_html( $result->get_error_message() );
+            }
         }
     }
 
@@ -297,7 +299,7 @@ class Location_Grid_V2_DB_Updater {
         ");
 
         if ( $result === false ) {
-            return new WP_Error( __METHOD__, 'Did not create table', [ 'error', $result ] );
+            return new WP_Error( __METHOD__, 'Did not create table: ' . $wpdb->last_error, [ 'error', $result ] );
         }
 
         return true;
@@ -388,6 +390,9 @@ class Location_Grid_V2_DB_Updater {
     public function install_upgrade_db_file( $file ) {
         global $wpdb;
         $fp = fopen( $file, 'r' );
+        if ( ! $fp ) {
+            return new WP_Error( __METHOD__, 'Could not open ' . basename( $file ) );
+        }
 
         $query = "INSERT IGNORE INTO `{$wpdb->prefix}dt_location_grid_upgrade` VALUES ";
 
@@ -408,19 +413,21 @@ class Location_Grid_V2_DB_Updater {
                 $query = str_replace( ", ;", ";", $query ); //remove last comma
                 $result = $wpdb->query( $query );  //phpcs:ignore
                 if ( $result === false ) {
-                    return new WP_Error( __METHOD__ . ': Inside 500 Count', 'Failed query', [ 'error', $result ] );
+                    fclose( $fp );
+                    return new WP_Error( __METHOD__ . ': Inside 500 Count', 'Failed query in ' . basename( $file ) . ': ' . $wpdb->last_error, [ 'error', $result ] );
                 }
                 $query = "INSERT IGNORE INTO `{$wpdb->prefix}dt_location_grid_upgrade` VALUES ";
                 $count = 0;
             }
         }
+        fclose( $fp );
         if ( strpos( $query, '(' ) !== false ) {
             //add the last queries
             $query .= ';';
             $query = str_replace( ", ;", ";", $query ); //remove last comma
             $result = $wpdb->query( $query );  //phpcs:ignore
             if ( $result === false ) {
-                return new WP_Error( __METHOD__, 'Failed query 2', [ 'error', $result ] );
+                return new WP_Error( __METHOD__, 'Failed query in ' . basename( $file ) . ': ' . $wpdb->last_error, [ 'error', $result ] );
             }
         }
 
