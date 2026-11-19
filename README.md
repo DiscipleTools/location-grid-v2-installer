@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Pray4Movement/location-grid-v2-installer.svg?branch=master)](https://travis-ci.com/Pray4Movement/location-grid-v2-installer)
+[![Build Status](https://travis-ci.com/DiscipleTools/location-grid-v2-installer.svg?branch=master)](https://travis-ci.com/DiscipleTools/location-grid-v2-installer)
 
 # Location Grid V2 Installer
 
@@ -36,9 +36,9 @@ this installer allows for pushing each improved versions of the location grid to
 ## Contribution
 
 Contributions welcome. You can report issues and bugs in the
-[Issues](https://github.com/Pray4Movement/location-grid-v2-installer/issues) section of the repo. You can present ideas
-in the [Discussions](https://github.com/Pray4Movement/location-grid-v2-installer/discussions) section of the repo. And
-code contributions are welcome using the [Pull Request](https://github.com/Pray4Movement/location-grid-v2-installer/pulls)
+[Issues](https://github.com/DiscipleTools/location-grid-v2-installer/issues) section of the repo. You can present ideas
+in the [Discussions](https://github.com/DiscipleTools/location-grid-v2-installer/discussions) section of the repo. And
+code contributions are welcome using the [Pull Request](https://github.com/DiscipleTools/location-grid-v2-installer/pulls)
 system for git. For a more details on contribution see the
-[contribution guidelines](https://github.com/Pray4Movement/location-grid-v2-installer/blob/master/CONTRIBUTING.md).
+[contribution guidelines](https://github.com/DiscipleTools/location-grid-v2-installer/blob/master/CONTRIBUTING.md).
 

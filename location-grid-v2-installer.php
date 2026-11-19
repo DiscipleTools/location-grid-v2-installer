@@ -1,17 +1,17 @@
 <?php
 /**
  * Plugin Name: Location Grid V2 Installer
- * Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
+ * Plugin URI: https://github.com/DiscipleTools/location-grid-v2-installer
  * Description: Small utility to add the latest location grid database and overwrite the current one. (386k+)
  * Version:  2.6
- * Author URI: https://github.com/Pray4Movement
- * GitHub Plugin URI: https://github.com/Pray4Movement/location-grid-v2-installer
+ * Author URI: https://github.com/DiscipleTools
+ * GitHub Plugin URI: https://github.com/DiscipleTools/location-grid-v2-installer
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
  * Tested up to: 5.5
  *
  * @package Disciple_Tools
- * @link    https://github.com/Pray4Movement
+ * @link    https://github.com/DiscipleTools
  * @license GPL-2.0 or later
  *          https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -551,7 +551,7 @@ class Location_Grid_V2_DB_Updater {
 //        }
 //        if ( class_exists( 'Puc_v4_Factory' ) ){
 //            Puc_v4_Factory::buildUpdateChecker(
-//                'https://raw.githubusercontent.com/Pray4Movement/location-grid-v2-installer/master/version-control.json',
+//                'https://raw.githubusercontent.com/DiscipleTools/location-grid-v2-installer/master/version-control.json',
 //                __FILE__,
 //                'location-grid-v2-installer'
 //            );
