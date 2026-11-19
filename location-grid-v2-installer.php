@@ -388,7 +388,43 @@ class Location_Grid_V2_DB_Updater {
     }
     public function process_step_15() {
         dt_write_log( __METHOD__ );
-        /* @todo Migrate custom table records to new database table*/
+        global $wpdb;
+        if ( ! $this->table_exists( $wpdb->dt_location_grid ) ) {
+            return true;
+        }
+
+        $columns = '`grid_id`, `name`, `level`, `level_name`, `country_code`, `admin0_code`, `parent_id`,
+            `admin0_grid_id`, `admin1_grid_id`, `admin2_grid_id`, `admin3_grid_id`, `admin4_grid_id`, `admin5_grid_id`,
+            `longitude`, `latitude`, `north_latitude`, `south_latitude`, `east_longitude`, `west_longitude`,
+            `population`, `modification_date`, `alt_name`, `alt_population`, `is_custom_location`, `alt_name_changed`';
+
+        // custom locations exist only in this site's table
+        $query = "INSERT INTO `{$wpdb->prefix}dt_location_grid_upgrade` ( $columns )
+            SELECT $columns FROM `$wpdb->dt_location_grid` WHERE grid_id >= 1000000000";
+        $result = $wpdb->query( $query ); //phpcs:ignore
+        if ( $result === false ) {
+            return new WP_Error( __METHOD__, 'Could not copy custom locations: ' . $wpdb->last_error );
+        }
+
+        // keep names and populations an admin changed on standard locations
+        $result = $wpdb->query("
+        UPDATE `{$wpdb->prefix}dt_location_grid_upgrade` s
+        INNER JOIN `$wpdb->dt_location_grid` l ON l.grid_id = s.grid_id
+        SET s.alt_name = l.alt_name, s.alt_name_changed = l.alt_name_changed
+        WHERE s.grid_id < 1000000000 AND l.alt_name IS NOT NULL AND BINARY l.alt_name <> BINARY l.name
+        ");
+        if ( $result === false ) {
+            return new WP_Error( __METHOD__, 'Could not copy edited location names: ' . $wpdb->last_error );
+        }
+        $result = $wpdb->query("
+        UPDATE `{$wpdb->prefix}dt_location_grid_upgrade` s
+        INNER JOIN `$wpdb->dt_location_grid` l ON l.grid_id = s.grid_id
+        SET s.alt_population = l.alt_population
+        WHERE s.grid_id < 1000000000 AND l.alt_population IS NOT NULL AND l.alt_population <> l.population
+        ");
+        if ( $result === false ) {
+            return new WP_Error( __METHOD__, 'Could not copy edited populations: ' . $wpdb->last_error );
+        }
 
         return true;
     }
