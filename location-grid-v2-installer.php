@@ -125,20 +125,25 @@ class Location_Grid_V2_DB_Updater {
     }
 
     public function main_column() {
+        $start_requested = isset( $_GET['loop'], $_POST['upgrade_lgdb_start_nonce'] ) && ! isset( $_GET['step'] )
+            && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['upgrade_lgdb_start_nonce'] ) ), 'upgrade_lgdb_start' );
         ?>
         <!-- Box -->
         <table class="widefat striped">
             <thead>
             <tr>
                 <th><p style="max-width:450px"></p>
-                    <p><a class="button" id="upgrade_button" href="<?php echo esc_url( trailingslashit( admin_url() ) ) ?>admin.php?page=<?php echo esc_attr( $this->token ) ?>&loop=true" disabled="true">Upgrade Away!</a></p>
+                    <form method="post" action="<?php echo esc_url( trailingslashit( admin_url() ) . 'admin.php?page=' . $this->token . '&loop=true' ) ?>">
+                        <?php wp_nonce_field( 'upgrade_lgdb_start', 'upgrade_lgdb_start_nonce' ) ?>
+                        <p><button type="submit" class="button" id="upgrade_button" disabled="true">Upgrade Away!</button></p>
+                    </form>
                 </th>
             </tr>
             </thead>
             <tbody>
             <?php
             /* disable button */
-            if ( ! isset( $_GET['loop'] ) ) {
+            if ( ! isset( $_GET['step'] ) && ! $start_requested ) {
                 ?>
                 <script>
                     jQuery(document).ready(function(){
@@ -149,7 +154,7 @@ class Location_Grid_V2_DB_Updater {
                 <?php
             }
             /* Start loop & add spinner */
-            if ( isset( $_GET['loop'] ) && ! isset( $_GET['step'] ) ) {
+            if ( $start_requested ) {
                 ?>
                 <tr>
                     <td><img src="<?php echo esc_url( get_theme_file_uri() ) ?>/spinner.svg" width="30px" alt="spinner" /></td>
